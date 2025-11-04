@@ -1,0 +1,24 @@
+name: Daily Main.py Run
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs every day at 00:00 UTC (8 AM Beijing Time)
+
+jobs:
+  run-main-py:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x' # Use the latest Python 3 version
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Run main.py
+      run: python main.py
