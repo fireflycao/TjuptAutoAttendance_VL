@@ -195,11 +195,35 @@ def load_config(path: str) -> dict:
 
 if __name__ == "__main__":
     argument_parser = ArgumentParser(description="Auto attendance bot for TJUPT.")
+    argument_parser.add_argument("-u", "--username", help="用户名")
+    argument_parser.add_argument("-p", "--password", help="密码")
+    argument_parser.add_argument("--base-url", default="https://tjupt.org/", help="基础URL")
+    argument_parser.add_argument("--cookies-path", default="data/cookies.pkl", help="Cookies保存路径")
+    argument_parser.add_argument("--model-api-key", help="ModelScope API Key")
+    argument_parser.add_argument("--model-base-url", default="https://api-inference.modelscope.cn/v1", help="ModelScope API Base URL")
     args = argument_parser.parse_args()
 
     os.makedirs("data", exist_ok=True)
 
     config_path = "config/config.ini"
-    config = load_config(config_path)
+    
+    # 优先从config.ini加载，如果不存在则从命令行参数获取
+    if os.path.exists(config_path):
+        print(f"✅ 从配置文件加载: {config_path}")
+        config = load_config(config_path)
+    else:
+        print("ℹ️ 配置文件不存在，从命令行参数读取配置")
+        if not args.username or not args.password:
+            raise ValueError("未找到配置文件时，必须提供 -u/--username 和 -p/--password 参数")
+        
+        config = {
+            "username": args.username,
+            "password": args.password,
+            "base_url": args.base_url,
+            "cookies_path": args.cookies_path,
+            "model_api_key": args.model_api_key,
+            "model_base_url": args.model_base_url,
+        }
+    
     bot = Bot(**config)
     bot.auto_attendance()
