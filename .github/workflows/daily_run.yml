@@ -2,7 +2,7 @@ name: Daily Main.py Run
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs every day at 00:00 UTC (8 AM Beijing Time)
+    - cron: '59 22 * * *' # 每天 UTC 22:59 (即北京时间次日 06:59)
 
 jobs:
   run-main-py:
