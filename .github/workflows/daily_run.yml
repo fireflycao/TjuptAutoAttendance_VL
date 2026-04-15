@@ -2,9 +2,8 @@ name: Daily Main.py Run
 
 on:
   schedule:
-    # 每天北京时间 06:59 运行 (UTC 22:59)
     - cron: '59 22 * * *'
-  workflow_dispatch: # 允许手动点击按钮测试
+  workflow_dispatch:
 
 jobs:
   run-main-py:
@@ -24,18 +23,14 @@ jobs:
         if [ -f requirements.txt ]; then
           pip install -r requirements.txt
         fi
-        # 确保安装了 requests 等基础库，防止脚本运行报错
         pip install requests
 
     - name: Run main.py
       env:
-        # 这些变量必须在仓库的 Settings -> Secrets -> Actions 中配置好
         MY_USER: ${{ secrets.MY_USER }}
         MY_PASS: ${{ secrets.MY_PASS }}
         MODELSCOPE_API_KEY: ${{ secrets.MODELSCOPE_API_KEY }}
+        # 尝试通过环境变量强制修改脚本内部的模型 ID
+        MODEL_ID: "qwen-vl-max"
       run: |
-        python main.py \
-          -u "$MY_USER" \
-          -p "$MY_PASS" \
-          --model-api-key "$MODELSCOPE_API_KEY" \
-          --model-id "qwen-vl-max"
+        python main.py -u "$MY_USER" -p "$MY_PASS" --model-api-key "$MODELSCOPE_API_KEY"
