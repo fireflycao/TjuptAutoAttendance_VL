@@ -30,5 +30,6 @@ jobs:
         # 这里对应你在 Settings -> Secrets 里设置的名字
         MY_USER: ${{ secrets.MY_USER }}
         MY_PASS: ${{ secrets.MY_PASS }}
+        MODELSCOPE_API_KEY: ${{ secrets.MODELSCOPE_API_KEY }}
       # 如果脚本还有其他参数要求（如 -v 验证码），请根据脚本要求添加
-      run: python main.py -u "$MY_USER" -p "$MY_PASS"
+      run: python main.py -u "$MY_USER" -p "$MY_PASS" --modelscope_api_key "$MODELSCOPE_API_KEY"
