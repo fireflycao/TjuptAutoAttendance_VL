@@ -2,7 +2,9 @@ name: Daily Main.py Run
 
 on:
   schedule:
-    - cron: '59 22 * * *' # 每天 UTC 22:59 (即北京时间次日 06:59)
+    # 每天北京时间 06:59 运行 (UTC 22:59)
+    - cron: '59 22 * * *'
+  workflow_dispatch: # 允许你手动点击按钮测试
 
 jobs:
   run-main-py:
@@ -15,10 +17,18 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.x' # Use the latest Python 3 version
+        python-version: '3.x'
 
     - name: Install dependencies
-      run: pip install -r requirements.txt
+      run: |
+        if [ -f requirements.txt ]; then
+          pip install -r requirements.txt
+        fi
 
     - name: Run main.py
-      run: python main.py
+      env:
+        # 这里对应你在 Settings -> Secrets 里设置的名字
+        MY_USER: ${{ secrets.MY_USER }}
+        MY_PASS: ${{ secrets.MY_PASS }}
+      # 如果脚本还有其他参数要求（如 -v 验证码），请根据脚本要求添加
+      run: python main.py -u "$MY_USER" -p "$MY_PASS"
